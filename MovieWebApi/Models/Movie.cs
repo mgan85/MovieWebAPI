@@ -27,6 +27,6 @@ namespace MovieWebApi.Models
         public int ReleaseYear { get; set; }
         public string Genre { get; set; }
         public int RunningTime { get; set; }
-        public double AverageRating { get; set; }
+        public double? AverageRating { get; set; }
     }
 }

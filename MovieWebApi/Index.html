@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="./scripts.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+</head>
+<body>
+    <div>
+        <h2>Show Top 5 Movies</h2>
+        <input type="button" value="show" onclick="showTop5Movie()" />
+        <p id="top5movies" />
+    </div>
+    <div>
+        <h2>Find Movies</h2>
+        <label for="title">Title:</label><br />
+        <input id="title" type="text" /><br />
+        <label for="releaseYear">Release year:</label><br />
+        <input id="releaseYear" type="number" /><br />
+        <label for="genre">Genre:</label><br />
+        <input id="genre" type="text" /><br />
+        <input type="button" value="show" onclick="showMovies()" />
+        <p id="movies" />
+    </div>
+    <div>
+        <h2>Show Top 5 User Movies</h2>
+        <label for="userid2">User ID:</label><br />
+        <input id="userid2" type="number" /><br />
+        <input type="button" value="show" onclick="showTop5UseMovies()" />
+        <p id="top5usermovies" />
+    </div>
+    <div>
+        <h2>Add Rate</h2>
+        <label for="movieid">Movie ID:</label><br />
+        <input id="movieid" /><br />
+        <label for="userid">User ID:</label><br />
+        <input id="userid" /><br />
+        <label for="rate">Rate:</label><br />
+        <input id="rate" /><br />
+        <input type="button" value="add" onclick="addRate()" />
+    </div>
+</body>
+</html>

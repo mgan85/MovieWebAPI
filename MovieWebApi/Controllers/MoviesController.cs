@@ -17,34 +17,78 @@ namespace MovieWebApi.Controllers
     {
         private MovieWebApiContext db = new MovieWebApiContext();
 
-        // GET: api/Movies
-        public IQueryable<Movie> GetMovies()
+        [ResponseType(typeof(Movie))]
+        public async Task<IHttpActionResult> GetMovies(string title, int? releaseYear, string genre)
         {
-            return db.Movies;
+            if (string.IsNullOrWhiteSpace(title) && releaseYear == null && string.IsNullOrWhiteSpace(genre))
+                return BadRequest();
+
+            IQueryable<Movie> movies = null;
+
+            if (!string.IsNullOrWhiteSpace(title))
+                movies = db.Movies.Where(x => x.Title.Contains(title));
+
+            if (releaseYear != null)
+                movies = movies != null ? movies.Where(x => x.ReleaseYear == releaseYear) : db.Movies.Where(x => x.ReleaseYear == releaseYear);
+
+            if (!string.IsNullOrWhiteSpace(genre))
+                movies = movies != null ? movies.Where(x => x.Genre == genre) : db.Movies.Where(x => x.Genre == genre);
+
+            if (movies == null || movies.FirstOrDefault() == null)
+                return NotFound();
+
+            return Ok(movies);
         }
 
-        // GET: api/Movies/5
         [ResponseType(typeof(Movie))]
-        public async Task<IHttpActionResult> GetMovie(int id)
+        public async Task<IHttpActionResult> Top5Movies()
         {
-            Movie movie = await db.Movies.FindAsync(id);
-            if (movie == null)
+            var top5Movies = db.Rates.GroupBy(x => x.MovieId)
+                                     .Select(y => new { Id = y.Key, Rating = y.Average(z => z.Rating) })
+                                     .Join(db.Movies, r => r.Id, m => m.Id, (r, m) => new {
+                                         m.Id,
+                                         m.Title,
+                                         m.ReleaseYear,
+                                         m.Genre,
+                                         m.RunningTime,
+                                         r.Rating
+                                     })
+                                     .OrderByDescending(y => y.Rating).Take(5);
+
+            if (top5Movies.FirstOrDefault() == null)
             {
                 return NotFound();
             }
 
-            return Ok(movie);
+            return Ok(top5Movies);
         }
 
-        private double averageRating(int movieId)
+        [ResponseType(typeof(Movie))]
+        public async Task<IHttpActionResult> Top5UserMovies(int? id)
         {
-            db.Rates.Where(x => x.MovieId == movieId).Average(y => y.Rating);
-            return 0;
-        }
+            if (id == null)
+                return BadRequest();
 
-        private void Top5Movies()
-        {
-            db.Rates.GroupBy(x => x.MovieId).Select(y => new { MovieId = y.Key, Rating = y.Average(z => z.Rating) }).OrderByDescending(y => y.Rating).Take(5);
+            var top5UserMovies = db.Rates.Where(v => v.UserId == id)
+                                     .GroupBy(x => x.MovieId)
+                                     .Select(y => new { Id = y.Key, Rating = y.Average(z => z.Rating) })
+                                     .Join(db.Movies, r => r.Id, m => m.Id, (r, m) => new
+                                     {
+                                         m.Id,
+                                         m.Title,
+                                         m.ReleaseYear,
+                                         m.RunningTime,
+                                         r.Rating
+                                     })
+                                     .OrderByDescending(y => y.Rating).Take(5);
+
+            if (top5UserMovies.FirstOrDefault() == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(top5UserMovies);
+
         }
 
         protected override void Dispose(bool disposing)

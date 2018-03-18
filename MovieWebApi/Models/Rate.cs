@@ -11,11 +11,11 @@ namespace MovieWebApi.Models
     {
         [Key]
         [Column(Order = 1)]
-        public int MovieId { get; set; }
+        public int? MovieId { get; set; }
         [Key]
         [Column(Order = 2)]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         [Required]
-        public double Rating { get; set; }
+        public int? Rating { get; set; }
     }
 }

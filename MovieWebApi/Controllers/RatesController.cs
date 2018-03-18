@@ -17,104 +17,37 @@ namespace MovieWebApi.Controllers
     {
         private MovieWebApiContext db = new MovieWebApiContext();
 
-        // GET: api/Rates
-        public IQueryable<Rate> GetRates()
-        {
-            return db.Rates;
-        }
-
-        // GET: api/Rates/5
-        [ResponseType(typeof(Rate))]
-        public async Task<IHttpActionResult> GetRate(int id)
-        {
-            Rate rate = await db.Rates.FindAsync(id);
-            if (rate == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(rate);
-        }
-
-        // PUT: api/Rates/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutRate(int id, Rate rate)
+        public async Task<IHttpActionResult> AddRate(int? movieId, int? userId, int? rate)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (movieId == null || userId == null)
+                return NotFound();
 
-            if (id != rate.MovieId)
-            {
+            if (rate < 1 || rate > 5)
                 return BadRequest();
-            }
 
-            db.Entry(rate).State = EntityState.Modified;
+            var rating = db.Rates.Where(x => x.MovieId == movieId && x.UserId == userId).FirstOrDefault();
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RateExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            if (rating == null)
+                db.Rates.Add(new Rate { MovieId = movieId, UserId = userId, Rating = rate });
+            else
+                rating.Rating = rate;
 
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST: api/Rates
-        [ResponseType(typeof(Rate))]
-        public async Task<IHttpActionResult> PostRate(Rate rate)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Rates.Add(rate);
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (RateExists(rate.MovieId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = rate.MovieId }, rate);
-        }
-
-        // DELETE: api/Rates/5
-        [ResponseType(typeof(Rate))]
-        public async Task<IHttpActionResult> DeleteRate(int id)
-        {
-            Rate rate = await db.Rates.FindAsync(id);
-            if (rate == null)
+            Movie movie = await db.Movies.FindAsync(movieId);
+            if (movie == null)
             {
                 return NotFound();
             }
 
-            db.Rates.Remove(rate);
+            movie.AverageRating = averageRating(movie.Id);
             await db.SaveChangesAsync();
 
-            return Ok(rate);
+            return Ok();
+        }
+
+        private double? averageRating(int movieId)
+        {
+            return db.Rates.Where(x => x.MovieId == movieId).Average(y => y.Rating);
         }
 
         protected override void Dispose(bool disposing)
