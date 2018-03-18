@@ -2,9 +2,9 @@
     var title = document.getElementById("title").value;
     var releaseYear = document.getElementById("releaseYear").value;
     var genre = document.getElementById("genre").value;
-    var uri = "api/Movies/GetMovies?title=" + title + "&releaseYear=" + releaseYear + "&genre=" + genre;
+    var uri = "api/Movies/Movies?title=" + title + "&releaseYear=" + releaseYear + "&genre=" + genre;
     var domElement = document.getElementById("movies");
-    $.getJSON(uri)
+    ajaxHelper(uri, 'GET')
         .done(function (data) {
             domElement.innerHTML = JSON.stringify(data);
         })
@@ -16,7 +16,7 @@
 function showTop5Movie() {
     var uri = "api/Movies/Top5Movies";
     var domElement = document.getElementById("top5movies");
-    $.getJSON(uri)
+    ajaxHelper(uri, 'GET')
         .done(function (data) {
             domElement.innerHTML = JSON.stringify(data);
         })
@@ -26,10 +26,10 @@ function showTop5Movie() {
 }
 
 function showTop5UseMovies() {
-    var genre = document.getElementById("genre").value;
-    var uri = "api/Movies/GetMovies?title=" + title + "&releaseYear=" + releaseYear + "&genre=" + genre;
+    var userid = document.getElementById("userid2").value;
+    var uri = "api/Movies/Top5UserMovies/" + userid;
     var domElement = document.getElementById("top5usermovies");
-    $.getJSON(uri)
+    ajaxHelper(uri, 'GET')
         .done(function (data) {
             domElement.innerHTML = JSON.stringify(data);
         })
@@ -39,14 +39,28 @@ function showTop5UseMovies() {
 }
 
 function addRate() {
-    var movieId = document.getElementById("userid2").value;
-    var uri = "api/Movies/Top5UserMovies/" + id;
-    var domElement = document.getElementById("top5usermovies");
-    $.getJSON(uri)
+    var rate = {
+        MovieId: parseInt(document.getElementById("movieid").value),
+        UserId: parseInt(document.getElementById("userid").value),
+        Rating: parseInt(document.getElementById("rate").value)
+    };
+
+    var uri = "api/Rates/AddRate";
+    var domElement = document.getElementById("infoRate");
+    ajaxHelper(uri, 'POST', rate)
         .done(function (data) {
-            domElement.innerHTML = JSON.stringify(data);
+            domElement.innerHTML = "Added";
         })
         .fail(function (jqXHR, textStatus, err) {
             domElement.innerHTML = 'Error: ' + err;
         });
+}
+
+function ajaxHelper(uri, method, data) {
+    return $.ajax({
+        type: method,
+        url: uri,
+        contentType: 'application/json; charset=utf-8',
+        data: data ? JSON.stringify(data) : null
+    });
 }

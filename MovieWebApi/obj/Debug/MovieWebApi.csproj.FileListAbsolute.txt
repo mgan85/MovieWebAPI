@@ -99,3 +99,6 @@ C:\Users\marci\source\repos\MovieWebApi\MovieWebApi\obj\Debug\MovieWebApi.csproj
 C:\Users\marci\source\repos\MovieWebApi\MovieWebApi\obj\Debug\MovieWebApi.dll
 C:\Users\marci\source\repos\MovieWebApi\MovieWebApi\obj\Debug\MovieWebApi.pdb
 C:\Users\marci\source\repos\MovieWebApi\MovieWebApi\obj\Debug\MovieWebApi.csprojResolveAssemblyReference.cache
+C:\Users\marci\source\repos\MovieWebApi\MovieWebApi\obj\Debug\MovieWebApi.Migrations.InitialCreate.resources
+C:\Users\marci\source\repos\MovieWebApi\MovieWebApi\obj\Debug\MovieWebApi.csproj.GenerateResource.cache
+C:\Users\marci\source\repos\MovieWebApi\MovieWebApi\obj\Debug\MovieWebApi.Migrations.Initial.resources

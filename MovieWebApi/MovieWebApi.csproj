@@ -189,6 +189,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803181106156_InitialCreate.cs" />
+    <Compile Include="Migrations\201803181106156_InitialCreate.Designer.cs">
+      <DependentUpon>201803181106156_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803181207170_Initial.cs" />
+    <Compile Include="Migrations\201803181207170_Initial.Designer.cs">
+      <DependentUpon>201803181207170_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Movie.cs" />
     <Compile Include="Models\MovieWebApiContext.cs" />
     <Compile Include="Models\Rate.cs" />
@@ -264,6 +273,14 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201803181106156_InitialCreate.resx">
+      <DependentUpon>201803181106156_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803181207170_Initial.resx">
+      <DependentUpon>201803181207170_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

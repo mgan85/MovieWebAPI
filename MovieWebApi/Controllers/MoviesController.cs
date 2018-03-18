@@ -18,7 +18,8 @@ namespace MovieWebApi.Controllers
         private MovieWebApiContext db = new MovieWebApiContext();
 
         [ResponseType(typeof(Movie))]
-        public async Task<IHttpActionResult> GetMovies(string title, int? releaseYear, string genre)
+        [HttpGet]
+        public async Task<IHttpActionResult> Movies(string title, int? releaseYear, string genre)
         {
             if (string.IsNullOrWhiteSpace(title) && releaseYear == null && string.IsNullOrWhiteSpace(genre))
                 return BadRequest();
@@ -41,6 +42,7 @@ namespace MovieWebApi.Controllers
         }
 
         [ResponseType(typeof(Movie))]
+        [HttpGet]
         public async Task<IHttpActionResult> Top5Movies()
         {
             var top5Movies = db.Rates.GroupBy(x => x.MovieId)
@@ -64,6 +66,7 @@ namespace MovieWebApi.Controllers
         }
 
         [ResponseType(typeof(Movie))]
+        [HttpGet]
         public async Task<IHttpActionResult> Top5UserMovies(int? id)
         {
             if (id == null)

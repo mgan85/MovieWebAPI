@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MovieWebApi.Models;
+using Newtonsoft.Json.Linq;
 
 namespace MovieWebApi.Controllers
 {
@@ -17,23 +18,28 @@ namespace MovieWebApi.Controllers
     {
         private MovieWebApiContext db = new MovieWebApiContext();
 
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> AddRate(int? movieId, int? userId, int? rate)
+        public IQueryable<Rate> GetRates()
         {
-            if (movieId == null || userId == null)
+            return db.Rates;
+        }
+        
+        [HttpPost]
+        public async Task<IHttpActionResult> AddRate(Rate rate)
+        {
+            if (rate.MovieId == null || rate.UserId == null)
                 return NotFound();
 
-            if (rate < 1 || rate > 5)
+            if (rate.Rating < 1 || rate.Rating > 5)
                 return BadRequest();
 
-            var rating = db.Rates.Where(x => x.MovieId == movieId && x.UserId == userId).FirstOrDefault();
-
+            var rating = db.Rates.Where(x => x.MovieId == rate.MovieId && x.UserId == rate.UserId).FirstOrDefault();
+                    
             if (rating == null)
-                db.Rates.Add(new Rate { MovieId = movieId, UserId = userId, Rating = rate });
+                db.Rates.Add(new Rate { MovieId = rate.MovieId, UserId = rate.UserId, Rating = rate.Rating });
             else
-                rating.Rating = rate;
+                rating.Rating = rate.Rating;
 
-            Movie movie = await db.Movies.FindAsync(movieId);
+            Movie movie = await db.Movies.FindAsync(rate.MovieId);
             if (movie == null)
             {
                 return NotFound();
